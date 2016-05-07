@@ -133,7 +133,7 @@ Everything that applies to `asyncOptions` with callbacks still applies to the Pr
 An example using the `fetch` API and ES6 syntax, with an API that returns an object like:
 
 ```javascript
-import Select from 'react-select';
+import Select from '@wyscout/react-select';
 
 /*
  * assuming the API returns something like this:

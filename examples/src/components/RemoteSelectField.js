@@ -1,5 +1,5 @@
 import React from 'react';
-import Select from 'react-select';
+import Select from '@wyscout/react-select';
 
 var RemoteSelectField = React.createClass({
 	displayName: 'RemoteSelectField',

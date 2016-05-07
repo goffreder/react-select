@@ -50,6 +50,7 @@ var Select = React.createClass({
 		optionRenderer: React.PropTypes.func,      // optionRenderer: function (option) {}
 		options: React.PropTypes.array,            // array of options
 		placeholder: React.PropTypes.string,       // field placeholder, displayed when there's no value
+		selectingEvent: React.PropTypes.string,    // the event on which the selection is triggered
 		searchable: React.PropTypes.bool,          // whether to enable searching feature or not
 		searchingText: React.PropTypes.string,     // message to display whilst options are loading via asyncOptions
 		searchPromptText: React.PropTypes.string,  // label to prompt for search input
@@ -89,6 +90,7 @@ var Select = React.createClass({
 			optionComponent: Option,
 			options: undefined,
 			placeholder: 'Select...',
+			selectingEvent: 'mousedown',
 			searchable: true,
 			searchingText: 'Searching...',
 			searchPromptText: 'Type to search',
@@ -602,9 +604,9 @@ var Select = React.createClass({
 
 		if (asyncOpts && typeof asyncOpts.then === 'function') {
 			asyncOpts.then((data) => {
-				optionsResponseHandler(null, data)
+				optionsResponseHandler(null, data);
 			}, (err) => {
-				optionsResponseHandler(err)
+				optionsResponseHandler(err);
 			});
 		}
 	},
@@ -744,7 +746,8 @@ var Select = React.createClass({
 				key: 'option-' + op[this.props.valueKey],
 				className: optionClass,
 				renderFunc: renderLabel,
-				mouseDown: this.selectValue,
+				selectingEvent: this.props.selectingEvent,
+				selectValue: this.selectValue,
 				mouseEnter: this.focusOption,
 				mouseLeave: this.unfocusOption,
 				addLabelText: this.props.addLabelText,

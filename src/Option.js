@@ -5,11 +5,12 @@ var Option = React.createClass({
 	propTypes: {
 		addLabelText: React.PropTypes.string,          // string rendered in case of allowCreate option passed to ReactSelect
 		className: React.PropTypes.string,             // className (based on mouse position)
-		mouseDown: React.PropTypes.func,               // method to handle click on option element
 		mouseEnter: React.PropTypes.func,              // method to handle mouseEnter on option element
 		mouseLeave: React.PropTypes.func,              // method to handle mouseLeave on option element
 		option: React.PropTypes.object.isRequired,     // object that is base for that option
-		renderFunc: React.PropTypes.func               // method passed to ReactSelect component to render label text
+		renderFunc: React.PropTypes.func,               // method passed to ReactSelect component to render label text
+		selectValue: React.PropTypes.func,               // method to handle click on option element
+		selectingEvent: React.PropTypes.string
 	},
 	blockEvent (event) {
 		event.preventDefault();
@@ -23,8 +24,9 @@ var Option = React.createClass({
 			window.location.href = event.target.href;
 		}
 	},
-	handleMouseDown (e) {
-		this.props.mouseDown(this.props.option, e);
+	handleSelectValue (e) {
+		console.log(this.props.selectingEvent);
+		this.props.selectValue(this.props.option, e);
 	},
 	handleMouseEnter (e) {
 		this.props.mouseEnter(this.props.option, e);
@@ -46,7 +48,8 @@ var Option = React.createClass({
 		) : (
 			<div className={optionClasses}
 				style={option.style}
-				onMouseDown={this.handleMouseDown}
+				onMouseUp={this.props.selectingEvent === 'mouseup' ? this.handleSelectValue : false}
+				onMouseDown={this.props.selectingEvent === 'mouseup' ? false : this.handleSelectValue}
 				onMouseEnter={this.handleMouseEnter}
 				onMouseLeave={this.handleMouseLeave}
 				onClick={this.handleMouseDown}

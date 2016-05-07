@@ -11,11 +11,12 @@ var Option = React.createClass({
 	propTypes: {
 		addLabelText: React.PropTypes.string, // string rendered in case of allowCreate option passed to ReactSelect
 		className: React.PropTypes.string, // className (based on mouse position)
-		mouseDown: React.PropTypes.func, // method to handle click on option element
 		mouseEnter: React.PropTypes.func, // method to handle mouseEnter on option element
 		mouseLeave: React.PropTypes.func, // method to handle mouseLeave on option element
 		option: React.PropTypes.object.isRequired, // object that is base for that option
-		renderFunc: React.PropTypes.func // method passed to ReactSelect component to render label text
+		renderFunc: React.PropTypes.func, // method passed to ReactSelect component to render label text
+		selectValue: React.PropTypes.func, // method to handle click on option element
+		selectingEvent: React.PropTypes.string
 	},
 	blockEvent: function blockEvent(event) {
 		event.preventDefault();
@@ -29,8 +30,9 @@ var Option = React.createClass({
 			window.location.href = event.target.href;
 		}
 	},
-	handleMouseDown: function handleMouseDown(e) {
-		this.props.mouseDown(this.props.option, e);
+	handleSelectValue: function handleSelectValue(e) {
+		console.log(this.props.selectingEvent);
+		this.props.selectValue(this.props.option, e);
 	},
 	handleMouseEnter: function handleMouseEnter(e) {
 		this.props.mouseEnter(this.props.option, e);
@@ -53,7 +55,8 @@ var Option = React.createClass({
 			'div',
 			{ className: optionClasses,
 				style: option.style,
-				onMouseDown: this.handleMouseDown,
+				onMouseUp: this.props.selectingEvent === 'mouseup' ? this.handleSelectValue : false,
+				onMouseDown: this.props.selectingEvent === 'mouseup' ? false : this.handleSelectValue,
 				onMouseEnter: this.handleMouseEnter,
 				onMouseLeave: this.handleMouseLeave,
 				onClick: this.handleMouseDown,
@@ -126,6 +129,7 @@ var Select = React.createClass({
 		optionRenderer: React.PropTypes.func, // optionRenderer: function (option) {}
 		options: React.PropTypes.array, // array of options
 		placeholder: React.PropTypes.string, // field placeholder, displayed when there's no value
+		selectingEvent: React.PropTypes.string, // the event on which the selection is triggered
 		searchable: React.PropTypes.bool, // whether to enable searching feature or not
 		searchingText: React.PropTypes.string, // message to display whilst options are loading via asyncOptions
 		searchPromptText: React.PropTypes.string, // label to prompt for search input
@@ -165,6 +169,7 @@ var Select = React.createClass({
 			optionComponent: Option,
 			options: undefined,
 			placeholder: 'Select...',
+			selectingEvent: 'mousedown',
 			searchable: true,
 			searchingText: 'Searching...',
 			searchPromptText: 'Type to search',
@@ -834,7 +839,8 @@ var Select = React.createClass({
 				key: 'option-' + op[this.props.valueKey],
 				className: optionClass,
 				renderFunc: renderLabel,
-				mouseDown: this.selectValue,
+				selectingEvent: this.props.selectingEvent,
+				selectValue: this.selectValue,
 				mouseEnter: this.focusOption,
 				mouseLeave: this.unfocusOption,
 				addLabelText: this.props.addLabelText,
